@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f0f697a9798919419b1225c8b1a25a5, type: 3}
+  m_Name: Asteroid
+  m_EditorClassIdentifier: 
+  resolution: 70
+  terrainRadius: 1
+  waterRadius: 0
+  hasWater: 0
+  hasAtmosphere: 0
+  isMoon: 0
+  noiseLayers:
+  - noiseSettings:
+      noiseLevels: 2
+      magnitude: 0.2
+      roughness: 1
+      minValue: -0.5
+      dampValue: -0.47
+      frequency: 0.5
+      noiseAlgorithms: 0100
+      isAffectedByPreviousLayer: 0
+  - noiseSettings:
+      noiseLevels: 5
+      magnitude: -1.23
+      roughness: 2
+      minValue: 0
+      dampValue: 0.2
+      frequency: 6.5
+      noiseAlgorithms: 0100
+      isAffectedByPreviousLayer: 1
+  colorGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
+    key2: {r: 0.46226418, g: 0.45136172, b: 0.45136172, a: 0}
+    key3: {r: 0.26415092, g: 0.25293696, b: 0.25293696, a: 0}
+    key4: {r: 0.20754719, g: 0.19286224, b: 0.19286224, a: 0}
+    key5: {r: 1, g: 1, b: 1, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 10794
+    ctime2: 31997
+    ctime3: 50115
+    ctime4: 61295
+    ctime5: 65535
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 5
+    m_NumAlphaKeys: 2
+  terrainMaterial: {fileID: 2100000, guid: 3a5750de16842d54795712957f26de5e, type: 2}
+  waterMaterial: {fileID: 2100000, guid: c6164e14c7062cd45b374c308281df89, type: 2}
+  atmosphereMaterial: {fileID: 2100000, guid: a9c8c9fba8207ce45aa32883dd0c1bc8, type: 2}

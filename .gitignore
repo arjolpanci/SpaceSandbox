@@ -1,0 +1,7 @@
+/*
+/*/
+
+!.gitignore
+!/Assets/
+/Assets/Scenes
+!/ProjectSettings/
