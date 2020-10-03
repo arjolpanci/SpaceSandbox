@@ -16,6 +16,7 @@
         planetRadius ("Planet Radius", float) = 1
         intensity ("Intensity", float) = 1
         atmosphereRadius ("Atmosphere Radius", float) = 2
+        Scale ("Atmosphere Scale", float) = 1
         
         //_SphereCenter ("Sphere Center", vector) = (0,0,0)
         //_SphereRadius ("Sphere Radius", float) = 1
@@ -71,8 +72,7 @@
             float scaleHeight;
             float rayLeightHeight;
             float intensity;
-            //float3 _SphereCenter;
-            //float _SphereRadius;
+            float Scale;
 
             v2f vert (appdata v)
             {
@@ -106,118 +106,78 @@
                 return float2(0,-1);
             }
 
-            float DensityAtPoint(float3 pointPos){
-                float heighAboveSurface = length(pointPos - planetCenter) - planetRadius;
-                float height01 = heighAboveSurface / (atmosphereRadius - planetRadius);
-                float localDensity = exp(-height01 * densityFallof) * (1-height01);
-                return localDensity;
-            }
-
             float CalculateRayDepth(float3 atmospherePoint){
                 float lightOpticalDepth = 0;
-                //float3 dirToLight = normalize(_WorldSpaceLightPos0);
+                
                 float3 dirToLight = normalize(lightPos - planetCenter);
-                float2 hitInfo = rayIntersect(atmospherePoint, dirToLight, planetRadius, atmosphereRadius);
+                float2 hitInfo = rayIntersect(atmospherePoint, dirToLight, planetCenter, atmosphereRadius);
                 float distanceThrough = hitInfo.y - hitInfo.x;
                 if(distanceThrough < 0) return -1;
                 
                 float step = distanceThrough / (lightSamplePoints-1);
                 float3 currentPoint = atmospherePoint;
+
                 for(int i=0; i<lightSamplePoints; i++){
                     float pointHeight = distance(currentPoint, planetCenter) - planetRadius;
-                    //float height01 = pointHeight / (atmosphereRadius - planetRadius);
-                    if(pointHeight <= 0) return -1;
-                    //float currentLightOpticalDepth = exp(-pointHeight / rayLeightHeight) * step;
-                    float currentLightOpticalDepth = DensityAtPoint(currentPoint);
+                    if(pointHeight < 0) return -1;
+                    float currentLightOpticalDepth = exp(-pointHeight / rayLeightHeight) * step;
                     lightOpticalDepth += currentLightOpticalDepth;
                     currentPoint += (dirToLight * step);
                 }
                 return lightOpticalDepth;
             }
             
-            float CalculateOpticalDepth(float3 rayOrigin, float3 rayDir, float rayLength){
-                float step = rayLength / (lightSamplePoints - 1);
-                float opticalDepth = 0;
-                float currentPoint = rayOrigin;
-                for( int i=0; i<lightSamplePoints; i++){
-                    float localDensity = DensityAtPoint(currentPoint);
-                    opticalDepth += localDensity * step;
-                    currentPoint += rayDir * step;
-                }
-                return opticalDepth;
-            }
-
             float3 CalculateLight(float segmentLength, float3 rayOrigin, float3 rayDir, int viewSamples){
+                
                 float3 finalLightValue = 0;
                 float totalOpticalDepth = 0;
+
                 float step = segmentLength / (viewSamples-1);
                 float3 currentPoint = rayOrigin;
-                float3 colors = float3(0,0,0);
-                colors.x = pow(400 / waveLengths.x, 4) * scatteringCoefficient;
-                colors.y = pow(400 / waveLengths.y, 4) * scatteringCoefficient;
-                colors.z = pow(400 / waveLengths.z, 4) * scatteringCoefficient;
-
                 float3 lightDir = normalize(lightPos - planetCenter);
 
+                float3 colors = float3(0,0,0);
+                colors.x = 400 / pow(waveLengths.x, 4) * scatteringCoefficient;
+                colors.y = 400 / pow(waveLengths.y, 4) * scatteringCoefficient;
+                colors.z = 400 / pow(waveLengths.z, 4) * scatteringCoefficient;
+
                 for(int i=0; i<viewSamples; i++){
-                    /*float2 lightRayHitInfo = rayIntersect(currentPoint, lightDir, planetCenter, atmosphereRadius);
-                    float sunRayLength = (lightRayHitInfo.y - lightRayHitInfo.x);
-                    if(sunRayLength < 0) continue;
-                    float rayOpticalDepth = CalculateOpticalDepth(currentPoint, lightDir, sunRayLength);
-                    float viewRayDepth = CalculateOpticalDepth(currentPoint, -rayDir, step * i);
-                    float pointDensity = DensityAtPoint(currentPoint);
-                    float transmittance = exp(-rayOpticalDepth);
-
-                    finalLightValue += pointDensity *transmittance * step;
-                    currentPoint += (rayDir * step);*/
-
                     float height = distance(atmosphereRadius, currentPoint) - atmosphereRadius;
-                    float opticalDepthSegment = exp(-height / scaleHeight) * step;
+                    float pointDepth = exp(-height / scaleHeight) * step;
+                    
+
                     float lightOpticalDepth = CalculateRayDepth(currentPoint);
                     if(lightOpticalDepth == -1) continue;
-                    totalOpticalDepth += opticalDepthSegment;
+                    totalOpticalDepth += pointDepth;
+
                     float3 transmittance = exp(-(lightOpticalDepth + totalOpticalDepth));
-                    finalLightValue += transmittance * opticalDepthSegment * step; 
+                    finalLightValue += transmittance * pointDepth; 
                     currentPoint += (rayDir * step);
                 }
                 
-                //finalLightValue *= intensity * step / planetRadius;
+                finalLightValue *= intensity;
 
                 return finalLightValue;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float sceneDepthNonLinear = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-				float sceneDepth = LinearEyeDepth(sceneDepthNonLinear) * length(i.viewVector);
-
                 float3 camPos = _WorldSpaceCameraPos;
                 float3 pointPos = i.worldPos;
                 float3 dirToPoint = normalize(pointPos - camPos);
-                //float3 dirToPoint = normalize(i.viewVector);
-
+                pointPos += Scale * dirToPoint;
                 if(length(camPos - atmosphereCenter) < atmosphereRadius){
-                    //camPos += dirToPoint * length(camPos - atmosphereCenter);
-                    //dirToPoint *= -1;
-                    pointPos = camPos;
-                }
-                //float3 dirToPoint = normalize(i.viewVector);
-                
-                float2 hitInfo = rayIntersect(pointPos, dirToPoint, atmosphereCenter, atmosphereRadius);
+                    pointPos = camPos - Scale * dirToPoint;
+                } 
+                const float epsilon = 0.0001;              
+                float2 hitInfo = rayIntersect(pointPos + epsilon, dirToPoint, atmosphereCenter, atmosphereRadius);
                 float distanceTo = hitInfo.x;
                 float distanceThrough = hitInfo.y - hitInfo.x;
-                //distanceThrough = min(distanceThrough, sceneDepth - distanceTo);
-                if(distanceThrough < 0) return float4(0,0,0,0);
-
-                //float pointInAtmosphere = (camPos + dirToPoint * distanceTo);
-                const float epsilon = 0.00001;
                 
-                float3 light = CalculateLight(distanceThrough - epsilon, pointPos + epsilon, dirToPoint, viewSamplePoints);
+                if(distanceThrough < 0) return float4(0,0,0,0);
+                      
+                float3 light = CalculateLight(distanceThrough - epsilon, pointPos, dirToPoint, viewSamplePoints);
                 return float4(light , 1);
-
-                //if(distanceThrough < 0) return float4(0,0,0,0);
-                //float4 col = float4(distanceThrough.xxx/4,1);
-                //return col;
 
             }
             ENDCG

@@ -24,19 +24,20 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Scale: 1
     - atmosphereRadius: 60
-    - densityFallof: 8.7
+    - densityFallof: 1
     - intensity: 1
     - lightSamplePoints: 10
     - planetRadius: 50
-    - rayLeightHeight: 5.04
-    - scaleHeight: 37.72
+    - rayLeightHeight: 16.58
+    - scaleHeight: 17.9
     - scatterStrength: 1
-    - scatteringCoefficient: 5.68
+    - scatteringCoefficient: 1.17
     - viewSamplePoints: 10
     m_Colors:
     - atmosphereCenter: {r: 0, g: 0, b: 0, a: 0}
-    - lightPos: {r: 6000, g: 0, b: 0, a: 1}
+    - lightPos: {r: 70, g: 0, b: 0, a: 1}
     - planetCenter: {r: 0, g: 0, b: 0, a: 0}
-    - waveLengths: {r: 700, g: 500, b: 430, a: 1}
+    - waveLengths: {r: 8, g: 8, b: 10, a: 1}
   m_BuildTextureStacks: []

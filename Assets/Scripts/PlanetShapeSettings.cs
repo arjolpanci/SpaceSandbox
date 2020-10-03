@@ -18,7 +18,6 @@ public class PlanetShapeSettings : ScriptableObject
     public Vector3 offset;
 
     [Header("Color Parameters")]
-    //public Shader shader;
     public Gradient colorGradient;
     public Material terrainMaterial, waterMaterial, atmosphereMaterial;
 
@@ -179,7 +178,8 @@ public class PlanetShapeSettings : ScriptableObject
 
     public Color[] GetColors(int size, Vector3[] vertices){
         Color[] colors = new Color[size];
-
+        float heightAboveSurface = maxTerrainValue - terrainRadius;
+        
         for(int i=0; i<size; i++){
             float distance = Vector3.Distance(vertices[i], new Vector3(0, 0, 0));
             distance = Mathf.Clamp(distance, minTerrainValue, maxTerrainValue);
