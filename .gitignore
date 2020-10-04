@@ -2,7 +2,7 @@
 /*/
 
 !.gitignore
-!.md
 !/Assets/
 /Assets/Scenes
 !/ProjectSettings/
+!README.md
