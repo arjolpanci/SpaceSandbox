@@ -132,7 +132,7 @@ public class PlanetShapeSettings : ScriptableObject
 			ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
 			ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
 			uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);*/
-            vertices[i] *= terrainRadius * 1.2F;
+            vertices[i] *= terrainRadius * 1.15F;
         }
 
 

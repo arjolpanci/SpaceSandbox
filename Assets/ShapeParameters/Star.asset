@@ -13,21 +13,23 @@ MonoBehaviour:
   m_Name: Star
   m_EditorClassIdentifier: 
   resolution: 70
-  terrainRadius: 1000
+  terrainRadius: 100
   waterRadius: 0
   hasWater: 0
   hasAtmosphere: 0
   isMoon: 0
   noiseLayers:
   - noiseSettings:
+      enabled: 1
       noiseLevels: 10
       magnitude: 0.01
       roughness: 30
       minValue: 0.5
       dampValue: 0.5
       frequency: 0.2
-      noiseAlgorithms: 0100
-      isAffectedByPreviousLayer: 0
+      noiseType: 0
+      useFirstLayerAsMask: 0
+  offset: {x: 0, y: 0, z: 0}
   colorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.86353207, b: 0, a: 1}

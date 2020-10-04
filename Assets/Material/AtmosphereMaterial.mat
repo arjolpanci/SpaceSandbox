@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: AtmosphereMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 79534673f020c8142b4285d241b90c6d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5286321e5e4d9a74e8fb1f5122cfd4dd, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -18,9 +18,26 @@ Material:
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
-    m_Floats: []
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Scale: 0
+    - atmosphereRadius: 57.5
+    - densityFallof: 2.05
+    - intensity: 0.5
+    - lightSamplePoints: 10
+    - planetRadius: 50
+    - rayLeightHeight: 2
+    - scaleHeight: 1.91
+    - scatterStrength: 1
+    - scatteringCoefficient: 4.86
+    - viewSamplePoints: 10
     m_Colors:
-    - Color_85E63870: {r: 0.854902, g: 1.341177, b: 2, a: 0}
-    - Color_B383E041: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 0}
+    - atmosphereCenter: {r: 0, g: 0, b: 0, a: 0}
+    - lightPos: {r: 3000, g: 0, b: 0, a: 1}
+    - planetCenter: {r: 0, g: 0, b: 0, a: 0}
+    - waveLengths: {r: 7, g: 5.3, b: 4.4, a: 1}
   m_BuildTextureStacks: []

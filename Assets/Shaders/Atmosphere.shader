@@ -16,7 +16,6 @@
         planetRadius ("Planet Radius", float) = 1
         intensity ("Intensity", float) = 1
         atmosphereRadius ("Atmosphere Radius", float) = 2
-        Scale ("Atmosphere Scale", float) = 1
         
         //_SphereCenter ("Sphere Center", vector) = (0,0,0)
         //_SphereRadius ("Sphere Radius", float) = 1
@@ -26,7 +25,7 @@
         Tags { "RenderType"="Opaque" "Queue"="Transparent"}
         LOD 200
 
-        //ZWrite Off
+        ZWrite Off
         Cull Off
         //ZTest Always
         Blend One One
@@ -72,8 +71,7 @@
             float scaleHeight;
             float rayLeightHeight;
             float intensity;
-            float Scale;
-
+            
             v2f vert (appdata v)
             {
                 v2f o;
@@ -98,6 +96,7 @@
 
                 if(discriminant >= 0){
                     float distanceFromOrigin = max(0, (-b-sd) / (2*a));
+                    //distanceFromOrigin = (-b-sd) / (2*a);
                     float distanceFromOrginFar = (-b+sd) / (2*a);
 
                     return float2(distanceFromOrigin, distanceFromOrginFar);
@@ -134,49 +133,57 @@
 
                 float step = segmentLength / (viewSamples-1);
                 float3 currentPoint = rayOrigin;
-                float3 lightDir = normalize(lightPos - planetCenter);
-
-                float3 colors = float3(0,0,0);
-                colors.x = 400 / pow(waveLengths.x, 4) * scatteringCoefficient;
-                colors.y = 400 / pow(waveLengths.y, 4) * scatteringCoefficient;
-                colors.z = 400 / pow(waveLengths.z, 4) * scatteringCoefficient;
+                
+                float3 colors = 0;
+                colors.r = 400 / pow(waveLengths.x, 4) * scatteringCoefficient;
+                colors.g = 400 / pow(waveLengths.y, 4) * scatteringCoefficient;
+                colors.b = 400 / pow(waveLengths.z, 4) * scatteringCoefficient;
 
                 for(int i=0; i<viewSamples; i++){
-                    float height = distance(atmosphereRadius, currentPoint) - atmosphereRadius;
+                    float height = distance(planetCenter, currentPoint) - planetRadius;
                     float pointDepth = exp(-height / scaleHeight) * step;
                     
-
                     float lightOpticalDepth = CalculateRayDepth(currentPoint);
                     if(lightOpticalDepth == -1) continue;
                     totalOpticalDepth += pointDepth;
 
-                    float3 transmittance = exp(-(lightOpticalDepth + totalOpticalDepth));
-                    finalLightValue += transmittance * pointDepth; 
+                    float3 transmittance = exp(-(lightOpticalDepth + totalOpticalDepth) * colors);
+                    finalLightValue += transmittance * pointDepth * step; 
                     currentPoint += (rayDir * step);
                 }
                 
-                finalLightValue *= intensity;
+                finalLightValue *= colors * intensity * step / planetRadius;
 
                 return finalLightValue;
             }
+
+            /*float3 FindFirstAtmospherePoint(float3 camPos, float3 viewDir, bool flag){
+                float epsilon = 1.00001;
+                if(flag) epsilon *= -1;
+                float2 hitInfo = rayIntersect(camPos , viewDir, atmosphereCenter, atmosphereRadius);
+                float distanceToPoint = hitInfo.x;
+                float3 firstPoint = camPos + (viewDir * distanceToPoint * epsilon);
+                return firstPoint;
+            }*/
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float3 camPos = _WorldSpaceCameraPos;
                 float3 pointPos = i.worldPos;
                 float3 dirToPoint = normalize(pointPos - camPos);
-                pointPos += Scale * dirToPoint;
-                if(length(camPos - atmosphereCenter) < atmosphereRadius){
-                    pointPos = camPos - Scale * dirToPoint;
-                } 
+                
+                if(length(camPos - atmosphereCenter) < atmosphereRadius) dirToPoint *= -1;
+                //pointPos = FindFirstAtmospherePoint(camPos, dirToPoint, flag);
+
                 const float epsilon = 0.0001;              
-                float2 hitInfo = rayIntersect(pointPos + epsilon, dirToPoint, atmosphereCenter, atmosphereRadius);
+                float2 hitInfo = rayIntersect(pointPos, dirToPoint, atmosphereCenter, atmosphereRadius);
                 float distanceTo = hitInfo.x;
                 float distanceThrough = hitInfo.y - hitInfo.x;
                 
                 if(distanceThrough < 0) return float4(0,0,0,0);
                       
                 float3 light = CalculateLight(distanceThrough - epsilon, pointPos, dirToPoint, viewSamplePoints);
+                
                 return float4(light , 1);
 
             }
