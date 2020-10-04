@@ -19,7 +19,7 @@ public class IcoSphere
         List<Face> triangles = SubDivideFaces(resolution);
         mesh.vertices = vertices;
         mesh.triangles = GetTrianglesFromFaces(triangles);
-        mesh.normals = vertices;
+        //mesh.normals = vertices;
         return mesh;
     }
 

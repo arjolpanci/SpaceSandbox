@@ -11,7 +11,7 @@ public class PlanetShapeSettings : ScriptableObject
     public float terrainRadius, waterRadius;
 
     [Header("Characteristics")]
-    public bool hasWater, hasAtmosphere, isMoon;
+    public bool hasWater, hasAtmosphere, isMoon, hasCraters;
 
     [Header("Noise Parameters")]
     public NoiseSource[] noiseLayers;
@@ -75,7 +75,7 @@ public class PlanetShapeSettings : ScriptableObject
 
         for(int i=0; i<vertices.Length; i++){
             float elevation = 0;
-            Vector3 pointOnSphere = new Vector3(vertices[i].x, vertices[i].y, vertices[i].z);
+            Vector3 pointOnSphere = vertices[i];
             for(int j=0; j<noiseLayers.Length; j++){
                 float currentLevelNoise = noiseLayers[j].GetNoise(pointOnSphere, origin, offset);
                 if(j != 0 && noiseLayers[j].noiseSettings.useFirstLayerAsMask){
@@ -86,7 +86,23 @@ public class PlanetShapeSettings : ScriptableObject
             }
             pointOnSphere *= terrainRadius * (elevation+1);
             vertices[i] = pointOnSphere;
-            float pointHeight = Vector3.Distance(pointOnSphere, new Vector3(0,0,0));
+
+            /*float pointHeight = Vector3.Distance(vertices[i], Vector3.zero);
+            if(pointHeight > maxTerrainValue) maxTerrainValue=pointHeight;
+            if(pointHeight < minTerrainValue) minTerrainValue=pointHeight;
+
+            float waterHeight = pointHeight;
+            if(waterHeight > terrainRadius) waterHeight = terrainRadius;
+            waterLevelData[i] = new Vector2(waterHeight, 0);*/ 
+        }
+
+        mesh.vertices = vertices;
+
+        minTerrainValue = 1000000000;
+        maxTerrainValue = 0;
+
+        for(int i=0; i<vertices.Length; i++){
+            float pointHeight = Vector3.Distance(vertices[i], Vector3.zero);
             if(pointHeight > maxTerrainValue) maxTerrainValue=pointHeight;
             if(pointHeight < minTerrainValue) minTerrainValue=pointHeight;
 
@@ -94,6 +110,8 @@ public class PlanetShapeSettings : ScriptableObject
             if(waterHeight > terrainRadius) waterHeight = terrainRadius;
             waterLevelData[i] = new Vector2(waterHeight, 0);
         }
+
+        if(hasCraters) GenerateCraters(mesh);
 
         if(!isMoon){
             for(int i=0; i<vertices.Length; i++){
@@ -106,10 +124,9 @@ public class PlanetShapeSettings : ScriptableObject
             mesh.uv = uvMaps;
         }
         
-        mesh.vertices = vertices;
-        mesh.normals = vertices;
+        mesh.RecalculateNormals();
+        mesh.colors = GetColors(vertices);  
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
-        mesh.colors = GetColors(vertices.Length, vertices);        
 
         return mesh;
     }
@@ -118,7 +135,6 @@ public class PlanetShapeSettings : ScriptableObject
         Mesh mesh = new Mesh();
         Vector3[] vertices;
         Vector2[] uvMaps;
-        //int[] triangles;
         mesh.Clear();
 
         //mesh = IcoSphere.GetIcosphereMesh(resolution/3);
@@ -137,8 +153,8 @@ public class PlanetShapeSettings : ScriptableObject
 
 
         mesh.vertices = vertices;
-        mesh.normals = vertices;
-        //mesh.RecalculateNormals();
+        //mesh.normals = vertices;
+        mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         //mesh.uv = uvMaps;
 
@@ -166,7 +182,8 @@ public class PlanetShapeSettings : ScriptableObject
         }
 
         mesh.vertices = vertices;
-        mesh.normals = vertices;
+        //mesh.normals = vertices;
+        mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         
         mesh.uv = waterLevelData;
@@ -176,12 +193,11 @@ public class PlanetShapeSettings : ScriptableObject
         return mesh;
     }
 
-    public Color[] GetColors(int size, Vector3[] vertices){
-        Color[] colors = new Color[size];
-        float heightAboveSurface = maxTerrainValue - terrainRadius;
+    public Color[] GetColors(Vector3[] vertices){
+        Color[] colors = new Color[vertices.Length];
         
-        for(int i=0; i<size; i++){
-            float distance = Vector3.Distance(vertices[i], new Vector3(0, 0, 0));
+        for(int i=0; i<vertices.Length; i++){
+            float distance = Vector3.Distance(vertices[i], Vector3.zero);
             distance = Mathf.Clamp(distance, minTerrainValue, maxTerrainValue);
             float height = Mathf.InverseLerp(minTerrainValue, maxTerrainValue, distance);
             colors[i] = colorGradient.Evaluate(height);   

@@ -13,30 +13,34 @@ MonoBehaviour:
   m_Name: Asteroid
   m_EditorClassIdentifier: 
   resolution: 70
-  terrainRadius: 1
+  terrainRadius: 2
   waterRadius: 0
   hasWater: 0
   hasAtmosphere: 0
   isMoon: 0
+  hasCraters: 1
   noiseLayers:
   - noiseSettings:
-      noiseLevels: 2
-      magnitude: 0.2
-      roughness: 1
+      enabled: 1
+      noiseLevels: 4
+      magnitude: 0.5
+      roughness: 0.8
       minValue: -0.5
-      dampValue: -0.47
-      frequency: 0.5
-      noiseAlgorithms: 0100
-      isAffectedByPreviousLayer: 0
+      dampValue: 0.4
+      frequency: 1.6
+      noiseType: 0
+      useFirstLayerAsMask: 0
   - noiseSettings:
+      enabled: 1
       noiseLevels: 5
-      magnitude: -1.23
-      roughness: 2
+      magnitude: -0.1
+      roughness: 3
       minValue: 0
-      dampValue: 0.2
-      frequency: 6.5
-      noiseAlgorithms: 0100
-      isAffectedByPreviousLayer: 1
+      dampValue: 0.5
+      frequency: 3
+      noiseType: 0
+      useFirstLayerAsMask: 1
+  offset: {x: 0, y: 0, z: 0}
   colorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}

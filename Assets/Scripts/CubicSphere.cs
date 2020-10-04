@@ -47,7 +47,7 @@ public class CubicSphere
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
-        mesh.normals = vertices;
+        //mesh.normals = vertices;
         mesh.uv = uvMap;
          
         return mesh;

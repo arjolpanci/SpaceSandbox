@@ -182,18 +182,4 @@ public class TestSphere
         return determinant < 0F;
     }
 
-    public static Color[] GetColors(Vector3[] vertices, float minTerrainValue, float maxTerrainValue, Gradient colorGradient){
-        Color[] colors = new Color[vertices.Length];
-
-        for(int i=0; i<vertices.Length; i++){
-            float distance = Vector3.Distance(vertices[i], new Vector3(0, 0, 0));
-            if(distance < minTerrainValue) distance = minTerrainValue;
-            if(distance > maxTerrainValue) distance = maxTerrainValue;
-            float height = Mathf.InverseLerp(minTerrainValue, maxTerrainValue, distance);
-            colors[i] = colorGradient.Evaluate(height);
-        }
-
-        return colors;
-    }
-
 }

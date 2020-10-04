@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolution: 150
   terrainRadius: 50
-  waterRadius: 49
+  waterRadius: 50
   hasWater: 1
   hasAtmosphere: 1
   isMoon: 0
+  hasCraters: 0
   noiseLayers:
   - noiseSettings:
       enabled: 1
@@ -26,46 +27,46 @@ MonoBehaviour:
       roughness: 2
       minValue: 0
       dampValue: 0.4
-      frequency: 3.45
+      frequency: 2
       noiseType: 0
       useFirstLayerAsMask: 0
   - noiseSettings:
       enabled: 1
       noiseLevels: 4
-      magnitude: 0.1
-      roughness: 1.05
+      magnitude: 0.3
+      roughness: 1.5
       minValue: 0
-      dampValue: 0.5
-      frequency: 3
+      dampValue: 0.4
+      frequency: 4
       noiseType: 1
       useFirstLayerAsMask: 1
   - noiseSettings:
       enabled: 1
-      noiseLevels: 2
-      magnitude: -0.1
-      roughness: 0.5
+      noiseLevels: 4
+      magnitude: -0.11
+      roughness: 1.1
       minValue: 0
-      dampValue: 0.6
-      frequency: 1
-      noiseType: 1
+      dampValue: 0.4
+      frequency: 2
+      noiseType: 0
       useFirstLayerAsMask: 0
   offset: {x: 0, y: 0, z: 0}
   colorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.9205608, b: 0, a: 1}
-    key1: {r: 0.16803518, g: 0.6226415, b: 0, a: 1}
-    key2: {r: 0.6792453, g: 0.4503603, b: 0.041651852, a: 1}
-    key3: {r: 0.38679248, g: 0.23075356, b: 0.012771457, a: 0}
-    key4: {r: 0.38679248, g: 0.23075356, b: 0.012771457, a: 0}
-    key5: {r: 0.38679248, g: 0.23075356, b: 0.012771457, a: 0}
+    key1: {r: 0.10078338, g: 0.5943396, b: 0.036445368, a: 1}
+    key2: {r: 0.13615048, g: 0.46226418, b: 0.0152634485, a: 1}
+    key3: {r: 0.5, g: 0.330276, b: 0.025943398, a: 0}
+    key4: {r: 0.3962264, g: 0.2582608, b: 0.016820924, a: 0}
+    key5: {r: 1, g: 0.99149, b: 0.9764151, a: 0}
     key6: {r: 1, g: 1, b: 1, a: 0}
     key7: {r: 1, g: 1, b: 1, a: 0}
     ctime0: 26214
-    ctime1: 36044
-    ctime2: 42598
-    ctime3: 52428
-    ctime4: 61295
-    ctime5: 61295
+    ctime1: 32768
+    ctime2: 39321
+    ctime3: 45875
+    ctime4: 52428
+    ctime5: 58982
     ctime6: 61102
     ctime7: 61102
     atime0: 0
@@ -77,7 +78,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 3
+    m_NumColorKeys: 6
     m_NumAlphaKeys: 3
   terrainMaterial: {fileID: 2100000, guid: 3a5750de16842d54795712957f26de5e, type: 2}
   waterMaterial: {fileID: 2100000, guid: c6164e14c7062cd45b374c308281df89, type: 2}
