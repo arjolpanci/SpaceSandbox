@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AtmosphereMaterial
-  m_Shader: {fileID: 4800000, guid: 5286321e5e4d9a74e8fb1f5122cfd4dd, type: 3}
+  m_Name: TestWater
+  m_Shader: {fileID: 4800000, guid: 012c29103efaf9347b3f543dbc8794c2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -24,20 +24,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Scale: 0
-    - atmosphereRadius: 57.5
-    - densityFallof: 1
-    - intensity: 0.55
-    - lightSamplePoints: 10
-    - planetRadius: 50
-    - rayLeightHeight: 1.7
-    - scaleHeight: 2.1
-    - scatterStrength: 1
-    - scatteringCoefficient: 4.23
-    - viewSamplePoints: 10
+    - glossAmplifier: 10.1
+    - minTerrainValue: 46
+    - reflectionOffset: 0.06
+    - spotSize: 0
+    - terrainRadius: 50
+    - waterOffset: -0.97
     m_Colors:
-    - atmosphereCenter: {r: 0, g: 0, b: 0, a: 0}
-    - lightPos: {r: 3000, g: 0, b: 0, a: 1}
-    - planetCenter: {r: 0, g: 0, b: 0, a: 0}
-    - waveLengths: {r: 7, g: 5.3, b: 4.4, a: 1}
+    - deepColor: {r: 0, g: 0.27189383, b: 0.6132076, a: 1}
+    - lightPos: {r: 3000, g: 0, b: 0, a: 0}
+    - shoreColor: {r: 0, g: 0.80852216, b: 0.8679245, a: 1}
   m_BuildTextureStacks: []

@@ -18,7 +18,7 @@ public class PlanetShapeSettings : ScriptableObject
     public Vector3 offset;
 
     [Header("Color Parameters")]
-    public Gradient colorGradient;
+    public Gradient shoreGradient, mainTerrainGradien, peaksGradient;
     public Material terrainMaterial, waterMaterial, atmosphereMaterial;
 
     float minTerrainValue = 1000000000;
@@ -125,7 +125,7 @@ public class PlanetShapeSettings : ScriptableObject
         }
         
         mesh.RecalculateNormals();
-        mesh.colors = GetColors(vertices);  
+        mesh.colors = GetColors(vertices, mesh.normals);  
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
 
         return mesh;
@@ -182,8 +182,8 @@ public class PlanetShapeSettings : ScriptableObject
         }
 
         mesh.vertices = vertices;
-        //mesh.normals = vertices;
-        mesh.RecalculateNormals();
+        mesh.normals = vertices;
+        //mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         
         mesh.uv = waterLevelData;
@@ -193,14 +193,23 @@ public class PlanetShapeSettings : ScriptableObject
         return mesh;
     }
 
-    public Color[] GetColors(Vector3[] vertices){
+    public Color[] GetColors(Vector3[] vertices, Vector3[] normals){
         Color[] colors = new Color[vertices.Length];
         
         for(int i=0; i<vertices.Length; i++){
             float distance = Vector3.Distance(vertices[i], Vector3.zero);
             distance = Mathf.Clamp(distance, minTerrainValue, maxTerrainValue);
-            float height = Mathf.InverseLerp(minTerrainValue, maxTerrainValue, distance);
-            colors[i] = colorGradient.Evaluate(height);   
+            
+            if(distance > terrainRadius && distance < (0.3*(maxTerrainValue-terrainRadius) + terrainRadius)){
+                float height = Mathf.InverseLerp(terrainRadius, (float)0.3*(maxTerrainValue-terrainRadius) + terrainRadius, distance);
+                colors[i] = mainTerrainGradien.Evaluate(height);
+            }else if(distance <= terrainRadius){
+                float height = Mathf.InverseLerp(minTerrainValue, terrainRadius, distance);
+                colors[i] = shoreGradient.Evaluate(height); 
+            }else if(distance >= (0.3*(maxTerrainValue-terrainRadius) + terrainRadius) && distance <= maxTerrainValue) {
+                float height = Mathf.InverseLerp((float)0.3*(maxTerrainValue-terrainRadius) + terrainRadius, maxTerrainValue, distance);
+                colors[i] = peaksGradient.Evaluate(height);
+            }
         }
 
         return colors;

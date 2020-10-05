@@ -9,7 +9,6 @@
         planetCenter ("Planet Center", vector) = (0,0,0)
         waveLengths ("Wave Lengths", vector) = (440,500,770)
         lightPos ("Light Position", vector) = (6000,0,0)
-        densityFallof ("Density Fallof", float) = 0.5
         scatteringCoefficient ("Scattering Coefficient", float) = 2
         scaleHeight ("Scale Height", float) = 0.5
         rayLeightHeight ("RayLeigh Height", float) = 0.5
@@ -51,7 +50,6 @@
                 float4 vertex : SV_POSITION;
                 float3 worldPos : TEXCOORD01;
                 float3 center : TEXCOORD2;
-                float3 viewVector : TEXCOORD3;
                 float3 normal :TEXCOORD4;
             };
 
@@ -66,7 +64,6 @@
             float3 waveLengths;
             float planetRadius;
             float atmosphereRadius;
-            float densityFallof;
             float scatteringCoefficient;
             float scaleHeight;
             float rayLeightHeight;
@@ -79,8 +76,6 @@
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldPos = mul (unity_ObjectToWorld, v.vertex);
                 o.center = mul (unity_ObjectToWorld, half4(0,0,0,1));
-                float3 viewVector = mul(unity_CameraInvProjection, float4(v.uv.xy * 2 - 1, 0, -1));
-				o.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
                 o.normal = v.normal;
                 return o;
             }

@@ -18,6 +18,7 @@ MonoBehaviour:
   hasWater: 0
   hasAtmosphere: 0
   isMoon: 0
+  hasCraters: 0
   noiseLayers:
   - noiseSettings:
       enabled: 1
@@ -30,22 +31,22 @@ MonoBehaviour:
       noiseType: 0
       useFirstLayerAsMask: 0
   offset: {x: 0, y: 0, z: 0}
-  colorGradient:
+  shoreGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.86353207, b: 0, a: 1}
-    key1: {r: 1, g: 0.75977707, b: 0, a: 1}
-    key2: {r: 1, g: 0.55099344, b: 0, a: 0}
-    key3: {r: 1, g: 0.45336097, b: 0, a: 0}
-    key4: {r: 0.6981132, g: 0.3184376, b: 0, a: 0}
-    key5: {r: 1, g: 1, b: 1, a: 0}
+    key0: {r: 1, g: 0.9398438, b: 0, a: 1}
+    key1: {r: 1, g: 0.6236605, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 17926
-    ctime2: 32382
-    ctime3: 48766
-    ctime4: 58018
-    ctime5: 65535
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
     ctime6: 0
     ctime7: 0
     atime0: 0
@@ -57,7 +58,65 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 6
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  mainTerrainGradien:
+    serializedVersion: 2
+    key0: {r: 0.9622642, g: 0.8278574, b: 0.25872195, a: 1}
+    key1: {r: 1, g: 0.7179685, b: 0.0141509175, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  peaksGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.72156864, b: 0.015686275, a: 1}
+    key1: {r: 0.6132076, g: 0.28161404, b: 0.014462441, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   terrainMaterial: {fileID: 2100000, guid: 619aff49f0edc784a99ae25781f20774, type: 2}
   waterMaterial: {fileID: 0}
