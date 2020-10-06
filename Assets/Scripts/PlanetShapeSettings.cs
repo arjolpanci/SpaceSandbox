@@ -23,7 +23,7 @@ public class PlanetShapeSettings : ScriptableObject
 
     float minTerrainValue = 1000000000;
     float maxTerrainValue = 0;
-    Vector2[] waterLevelData;
+    Vector4[] waterLevelData;
 
     public void GenerateCraters(Mesh mesh){
         Vector3[] vertices = mesh.vertices;
@@ -71,7 +71,7 @@ public class PlanetShapeSettings : ScriptableObject
 
         vertices = mesh.vertices;
         uvMaps = new Vector2[vertices.Length];
-        waterLevelData = new Vector2[vertices.Length];
+        waterLevelData = new Vector4[vertices.Length];
 
         for(int i=0; i<vertices.Length; i++){
             float elevation = 0;
@@ -108,7 +108,7 @@ public class PlanetShapeSettings : ScriptableObject
 
             float waterHeight = pointHeight;
             if(waterHeight > terrainRadius) waterHeight = terrainRadius;
-            waterLevelData[i] = new Vector2(waterHeight, 0);
+            waterLevelData[i] = new Vector4(waterHeight, 0, 0, 0);
         }
 
         if(hasCraters) GenerateCraters(mesh);
@@ -164,29 +164,31 @@ public class PlanetShapeSettings : ScriptableObject
     public Mesh CreateWater(Vector3 origin){
         Mesh mesh = new Mesh();
         Vector3[] vertices;
-        //Vector2[] uvMaps;
+        Vector2[] uvMaps;
         //int[] triangles;
         mesh.Clear();
 
         mesh = IcoSphere.GetIcosphereMesh(resolution);
         vertices = mesh.vertices;
-        //uvMaps = new Vector2[vertices.Length];
+        uvMaps = new Vector2[vertices.Length];
         
         for(int i=0; i<vertices.Length; i++){
-            //Vector3 unitVector = vertices[i].normalized;
-			//Vector2 ICOuv = new Vector2(0, 0);
-			//ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
-			//ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
-			//uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);
+            Vector3 unitVector = vertices[i].normalized;
+			Vector2 ICOuv = new Vector2(0, 0);
+			ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
+			ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
+			uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);
             vertices[i] *= waterRadius;
         }
 
+        mesh.uv = uvMaps;
         mesh.vertices = vertices;
         mesh.normals = vertices;
         //mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         
-        mesh.uv = waterLevelData;
+        //mesh.uv = waterLevelData;
+        mesh.tangents = waterLevelData;
         waterMaterial.SetFloat("_MinLevel", minTerrainValue);
         waterMaterial.SetFloat("_WaterLine", terrainRadius);
 

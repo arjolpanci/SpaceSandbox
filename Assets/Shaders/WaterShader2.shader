@@ -32,6 +32,7 @@
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
                 float3 normal : NORMAL;
+                float4 tangent : TANGENT;
             };
 
             struct v2f
@@ -40,6 +41,7 @@
                 float4 vertex : SV_POSITION;
                 float3 worldPos : TEXCOORD1;
                 float3 normal : TEXCOORD2;
+                float4 tangent : TEXCOORD3;
             };
 
             sampler2D _MainTex;
@@ -61,6 +63,7 @@
                 //o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.uv = v.uv;
                 o.normal = v.normal;
+                o.tangent = v.tangent;
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                 return o;
             }
@@ -87,6 +90,11 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
+                float2 resolution = float2(1024, 1024);
+                float4 noiseVal = tex2D(_MainTex, (i.uv + (_SinTime/1000)) * 20);
+                //noiseVal = step(0.6, noiseVal);
+                noiseVal = smoothstep(0.6, 0.9, noiseVal);
+
                 float3 camPos = _WorldSpaceCameraPos;
 
                 //Direct Diffuse Light
@@ -101,11 +109,11 @@
                 float3 viewReflect = reflect(-dirToCam, normal) + spotSize;
 
                 float specularFallof = max(0, dot(viewReflect, lightDir));
-                specularFallof = pow(specularFallof, glossAmplifier);
+                specularFallof = pow(specularFallof, glossAmplifier) * noiseVal;
                 //float3 directSpecular = specularFallof * lightColor;
 
                 //Calculating Color Value
-                float deepness = i.uv.x + waterOffset;
+                float deepness = i.tangent.x + waterOffset;
                 float height = smoothstep(minTerrainValue, terrainRadius, deepness);
                 float4 pointColor = lerp(shoreColor, deepColor, 1-height);
 

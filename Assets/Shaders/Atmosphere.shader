@@ -28,6 +28,7 @@
         Cull Off
         //ZTest Always
         Blend One One
+        //Blend SrcAlpha OneMinusSrcAlpha
         Pass
         {
             CGPROGRAM

@@ -139,5 +139,5 @@ MonoBehaviour:
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   terrainMaterial: {fileID: 2100000, guid: 3a5750de16842d54795712957f26de5e, type: 2}
-  waterMaterial: {fileID: 2100000, guid: c6164e14c7062cd45b374c308281df89, type: 2}
+  waterMaterial: {fileID: 2100000, guid: 92b304fa590cd074090118621d90293a, type: 2}
   atmosphereMaterial: {fileID: 2100000, guid: 570e99db0f8282c40a792507eaa9fb94, type: 2}

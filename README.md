@@ -11,7 +11,7 @@ Currently supported celestial bodies are:
  - Stars (Large light-emitting bodies)
 
 # Latest Images
-![Earth-Like](https://user-images.githubusercontent.com/16520125/95028725-b66d0a00-06a2-11eb-9084-00f0b13d9338.png)
+![Earth-Like](https://user-images.githubusercontent.com/16520125/95200616-fd601a00-07de-11eb-9770-b73ba74ec6fa.png)
 ![Asteroid](https://user-images.githubusercontent.com/16520125/95028735-c553bc80-06a2-11eb-86bb-9f23bcc67ee1.png)
 ![Moon](https://user-images.githubusercontent.com/16520125/95028742-d3094200-06a2-11eb-8b48-10278afb437d.png)
 ![Star](https://user-images.githubusercontent.com/16520125/95028747-da305000-06a2-11eb-8023-5716711990d6.png)
