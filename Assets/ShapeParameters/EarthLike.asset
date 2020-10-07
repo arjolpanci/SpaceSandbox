@@ -115,7 +115,7 @@ MonoBehaviour:
     key0: {r: 0.08627451, g: 0.5372549, b: 0.019607844, a: 1}
     key1: {r: 0.5921569, g: 0.36898282, b: 0.13333333, a: 1}
     key2: {r: 0.4056604, g: 0.22400452, b: 0.032529376, a: 0}
-    key3: {r: 0.530621, g: 0.38715845, b: 0.2359412, a: 0}
+    key3: {r: 0.38679248, g: 0.2650623, b: 0.13318796, a: 0}
     key4: {r: 1, g: 1, b: 1, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
@@ -142,4 +142,4 @@ MonoBehaviour:
   terrainMaterial: {fileID: 2100000, guid: 3a5750de16842d54795712957f26de5e, type: 2}
   waterMaterial: {fileID: 2100000, guid: 92b304fa590cd074090118621d90293a, type: 2}
   atmosphereMaterial: {fileID: 2100000, guid: 570e99db0f8282c40a792507eaa9fb94, type: 2}
-  colorChangeHeight: 0.4
+  colorChangeHeight: 0.3
