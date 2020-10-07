@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Asteroid
   m_EditorClassIdentifier: 
   resolution: 70
+  meshType: 0
   terrainRadius: 2
   waterRadius: 0
   hasWater: 0
   hasAtmosphere: 0
-  isMoon: 0
   hasCraters: 1
+  nrOfCraters: 100
   noiseLayers:
   - noiseSettings:
       enabled: 1
@@ -131,3 +132,4 @@ MonoBehaviour:
   terrainMaterial: {fileID: 2100000, guid: 3a5750de16842d54795712957f26de5e, type: 2}
   waterMaterial: {fileID: 2100000, guid: c6164e14c7062cd45b374c308281df89, type: 2}
   atmosphereMaterial: {fileID: 2100000, guid: a9c8c9fba8207ce45aa32883dd0c1bc8, type: 2}
+  colorChangeHeight: 0

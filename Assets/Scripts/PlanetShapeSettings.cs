@@ -5,13 +5,18 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class PlanetShapeSettings : ScriptableObject
 {
+
+    public enum SphereMeshType {Icosphere, CubicSphere}
+
     [Header("Size&Detail")]
     [Range(5, 1000)]
     public int resolution;
+    public SphereMeshType meshType;
     public float terrainRadius, waterRadius;
 
     [Header("Characteristics")]
-    public bool hasWater, hasAtmosphere, isMoon, hasCraters;
+    public bool hasWater, hasAtmosphere, hasCraters;
+    public int nrOfCraters;
 
     [Header("Noise Parameters")]
     public NoiseSource[] noiseLayers;
@@ -20,16 +25,17 @@ public class PlanetShapeSettings : ScriptableObject
     [Header("Color Parameters")]
     public Gradient shoreGradient, mainTerrainGradien, peaksGradient;
     public Material terrainMaterial, waterMaterial, atmosphereMaterial;
+    [Range(0,1)]
+    public float colorChangeHeight;
 
     float minTerrainValue = 1000000000;
     float maxTerrainValue = 0;
     Vector4[] waterLevelData;
 
-    public void GenerateCraters(Mesh mesh){
+    public void GenerateCraters(Mesh mesh, int nrOfCraters){
         Vector3[] vertices = mesh.vertices;
         Vector3[] workVertices = mesh.vertices;
-        int nrOfCraters = Random.Range(50, 150);
-
+        
         while(nrOfCraters > 0){
             float craterRadius = Random.Range(0.5F, 1.5F)/terrainRadius;
             float craterDepth = Random.Range(0.9F, 0.98F);
@@ -53,50 +59,31 @@ public class PlanetShapeSettings : ScriptableObject
         return result;
     }
 
-
-    public Mesh CreateTerrain(Vector3 origin){
-        Mesh mesh = new Mesh();
-        Vector3[] vertices;
-        Vector2[] uvMaps;
-        //int[] triangles;
-        Color[] colors = new Color[(resolution+1) * (resolution+1)];
-        mesh.Clear();
-
-        if(isMoon){
-            mesh = CubicSphere.GetSphereMesh(resolution);
-            GenerateCraters(mesh);
-        }else{
-            mesh = IcoSphere.GetIcosphereMesh(resolution);
-        }
-
-        vertices = mesh.vertices;
-        uvMaps = new Vector2[vertices.Length];
-        waterLevelData = new Vector4[vertices.Length];
+    public void AddMeshDetail(Mesh mesh, Vector3 origin, float radius, bool hasElevation){
+        Vector3[] vertices = mesh.vertices;
 
         for(int i=0; i<vertices.Length; i++){
             float elevation = 0;
-            Vector3 pointOnSphere = vertices[i];
-            for(int j=0; j<noiseLayers.Length; j++){
-                float currentLevelNoise = noiseLayers[j].GetNoise(pointOnSphere, origin, offset);
-                if(j != 0 && noiseLayers[j].noiseSettings.useFirstLayerAsMask){
-                    float firstLayerNoise = noiseLayers[0].GetNoise(pointOnSphere, origin, offset);
-                    currentLevelNoise *= firstLayerNoise;
+            if(hasElevation){
+                for(int j=0; j<noiseLayers.Length; j++){
+                    float currentLevelNoise = noiseLayers[j].GetNoise(vertices[i], origin, offset);
+                    if(noiseLayers[j].noiseSettings.useFirstLayerAsMask && j != 0){
+                        float firstLayerNoise = noiseLayers[0].GetNoise(vertices[i], origin, offset);
+                        currentLevelNoise *= firstLayerNoise;
+                    }
+                    elevation += currentLevelNoise;
                 }
-                elevation += currentLevelNoise;
             }
-            pointOnSphere *= terrainRadius * (elevation+1);
-            vertices[i] = pointOnSphere;
-
-            /*float pointHeight = Vector3.Distance(vertices[i], Vector3.zero);
-            if(pointHeight > maxTerrainValue) maxTerrainValue=pointHeight;
-            if(pointHeight < minTerrainValue) minTerrainValue=pointHeight;
-
-            float waterHeight = pointHeight;
-            if(waterHeight > terrainRadius) waterHeight = terrainRadius;
-            waterLevelData[i] = new Vector2(waterHeight, 0);*/ 
+            
+            vertices[i] *= radius * (elevation + 1);
         }
 
         mesh.vertices = vertices;
+    }
+
+    public void UpdateTerrainMinMax(Mesh mesh){
+        Vector3[] vertices = mesh.vertices;
+        waterLevelData = new Vector4[vertices.Length];
 
         minTerrainValue = 1000000000;
         maxTerrainValue = 0;
@@ -110,22 +97,25 @@ public class PlanetShapeSettings : ScriptableObject
             if(waterHeight > terrainRadius) waterHeight = terrainRadius;
             waterLevelData[i] = new Vector4(waterHeight, 0, 0, 0);
         }
+    }
 
-        if(hasCraters) GenerateCraters(mesh);
+    public Mesh CreateTerrain(Vector3 origin){
+        Mesh mesh = new Mesh();
+        mesh.Clear();
 
-        if(!isMoon){
-            for(int i=0; i<vertices.Length; i++){
-                Vector3 unitVector = vertices[i].normalized;
-                Vector2 ICOuv = new Vector2(0, 0);
-                ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
-                ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
-                uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);
-            }
-            mesh.uv = uvMaps;
+        if(meshType == SphereMeshType.Icosphere){
+            mesh = IcoSphere.GetIcosphereMesh(resolution);
+        }else{
+            mesh = CubicSphere.GetSphereMesh(resolution);
         }
+
+        if(hasCraters) GenerateCraters(mesh, nrOfCraters);
+
+        AddMeshDetail(mesh, origin, terrainRadius, true);
+        UpdateTerrainMinMax(mesh);
         
         mesh.RecalculateNormals();
-        mesh.colors = GetColors(vertices, mesh.normals);  
+        mesh.colors = GetColors(mesh.vertices, mesh.normals);  
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
 
         return mesh;
@@ -133,61 +123,26 @@ public class PlanetShapeSettings : ScriptableObject
 
     public Mesh CreateAtmosphere(Vector3 origin){
         Mesh mesh = new Mesh();
-        Vector3[] vertices;
-        Vector2[] uvMaps;
         mesh.Clear();
 
-        //mesh = IcoSphere.GetIcosphereMesh(resolution/3);
         mesh = CubicSphere.GetSphereMesh(resolution);
-        vertices = mesh.vertices;
-        uvMaps = new Vector2[vertices.Length];
-
-        for(int i=0; i<vertices.Length; i++){
-            /*Vector3 unitVector = vertices[i].normalized;
-			Vector2 ICOuv = new Vector2(0, 0);
-			ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
-			ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
-			uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);*/
-            vertices[i] *= terrainRadius * 1.15F;
-        }
-
-
-        mesh.vertices = vertices;
-        //mesh.normals = vertices;
+        AddMeshDetail(mesh, origin, terrainRadius * 1.15F, false);
+        
         mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
-        //mesh.uv = uvMaps;
 
         return mesh;
     }
 
     public Mesh CreateWater(Vector3 origin){
         Mesh mesh = new Mesh();
-        Vector3[] vertices;
-        Vector2[] uvMaps;
-        //int[] triangles;
         mesh.Clear();
 
         mesh = IcoSphere.GetIcosphereMesh(resolution);
-        vertices = mesh.vertices;
-        uvMaps = new Vector2[vertices.Length];
-        
-        for(int i=0; i<vertices.Length; i++){
-            Vector3 unitVector = vertices[i].normalized;
-			Vector2 ICOuv = new Vector2(0, 0);
-			ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
-			ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
-			uvMaps[i] = new Vector2(ICOuv.x, ICOuv.y);
-            vertices[i] *= waterRadius;
-        }
+        AddMeshDetail(mesh, origin, waterRadius, false);
 
-        mesh.uv = uvMaps;
-        mesh.vertices = vertices;
-        mesh.normals = vertices;
-        //mesh.RecalculateNormals();
+        mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
-        
-        //mesh.uv = waterLevelData;
         mesh.tangents = waterLevelData;
         waterMaterial.SetFloat("_MinLevel", minTerrainValue);
         waterMaterial.SetFloat("_WaterLine", terrainRadius);
@@ -202,14 +157,14 @@ public class PlanetShapeSettings : ScriptableObject
             float distance = Vector3.Distance(vertices[i], Vector3.zero);
             distance = Mathf.Clamp(distance, minTerrainValue, maxTerrainValue);
             
-            if(distance > terrainRadius && distance < (0.3*(maxTerrainValue-terrainRadius) + terrainRadius)){
-                float height = Mathf.InverseLerp(terrainRadius, (float)0.3*(maxTerrainValue-terrainRadius) + terrainRadius, distance);
+            if(distance > terrainRadius && distance < (colorChangeHeight*(maxTerrainValue-terrainRadius) + terrainRadius)){
+                float height = Mathf.InverseLerp(terrainRadius, (float)colorChangeHeight*(maxTerrainValue-terrainRadius) + terrainRadius, distance);
                 colors[i] = mainTerrainGradien.Evaluate(height);
             }else if(distance <= terrainRadius){
                 float height = Mathf.InverseLerp(minTerrainValue, terrainRadius, distance);
                 colors[i] = shoreGradient.Evaluate(height); 
-            }else if(distance >= (0.3*(maxTerrainValue-terrainRadius) + terrainRadius) && distance <= maxTerrainValue) {
-                float height = Mathf.InverseLerp((float)0.3*(maxTerrainValue-terrainRadius) + terrainRadius, maxTerrainValue, distance);
+            }else if(distance >= (colorChangeHeight*(maxTerrainValue-terrainRadius) + terrainRadius) && distance <= maxTerrainValue) {
+                float height = Mathf.InverseLerp((float)colorChangeHeight*(maxTerrainValue-terrainRadius) + terrainRadius, maxTerrainValue, distance);
                 colors[i] = peaksGradient.Evaluate(height);
             }
         }

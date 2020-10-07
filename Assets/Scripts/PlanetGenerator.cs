@@ -9,9 +9,6 @@ public class PlanetGenerator : MonoBehaviour
 
     public GameObject player;
     
-    private float minTerrainValue;
-    private float maxTerrainValue;
-
     GameObject terrainSphere, atmosphereSphere, waterSphere;
     float gravity = -10F;
     Vector3 origin;
@@ -24,48 +21,6 @@ public class PlanetGenerator : MonoBehaviour
     {
         origin = transform.position;
         //GenerateObject();
-    }
-
-    public void GenerateObject(){
-        origin = transform.position;
-        
-        if(terrainSphere == null) terrainSphere = new GameObject("TerrainSphere");
-        terrainSphere.transform.parent = this.gameObject.transform;
-
-        if(terrainSphere.GetComponent<MeshRenderer>() == null) terrainSphere.AddComponent<MeshRenderer>().sharedMaterial = shapeSettings.terrainMaterial;
-        if(terrainSphere.GetComponent<MeshFilter>() == null) terrainSphere.AddComponent<MeshFilter>();
-        MeshFilter terrainMeshFilter = terrainSphere.GetComponent<MeshFilter>();
-        terrainMeshFilter.transform.position = origin;
-        terrainMeshFilter.sharedMesh = shapeSettings.CreateTerrain(origin);
-        terrainMeshFilter.sharedMesh.RecalculateBounds();
-        if(terrainSphere.GetComponent<MeshCollider>() == null) terrainSphere.AddComponent<MeshCollider>();
-        terrainSphere.GetComponent<MeshCollider>().sharedMesh = null;
-        terrainSphere.GetComponent<MeshCollider>().sharedMesh = terrainMeshFilter.sharedMesh;
-
-        
-        if(shapeSettings.hasWater){
-            if(waterSphere == null) waterSphere = new GameObject("WaterSphere");
-            waterSphere.transform.parent = this.gameObject.transform;
-
-            if(waterSphere.GetComponent<MeshRenderer>() == null) waterSphere.AddComponent<MeshRenderer>().sharedMaterial = shapeSettings.waterMaterial;
-            if(waterSphere.GetComponent<MeshFilter>() == null) waterSphere.AddComponent<MeshFilter>();
-            MeshFilter waterMeshFilter = waterSphere.GetComponent<MeshFilter>();
-            waterMeshFilter.transform.position = origin;
-            waterMeshFilter.sharedMesh = shapeSettings.CreateWater(origin);
-        }
-        
-
-        if(shapeSettings.hasAtmosphere){
-            if(atmosphereSphere == null) atmosphereSphere = new GameObject("AtmosphereSphere");
-            atmosphereSphere.transform.parent = this.gameObject.transform;
-
-            if(atmosphereSphere.GetComponent<MeshRenderer>() == null) atmosphereSphere.AddComponent<MeshRenderer>().sharedMaterial = shapeSettings.atmosphereMaterial;
-            if(atmosphereSphere.GetComponent<MeshFilter>() == null) atmosphereSphere.AddComponent<MeshFilter>();
-            MeshFilter atmosphereMeshFilter = atmosphereSphere.GetComponent<MeshFilter>();
-            atmosphereMeshFilter.transform.position = origin;
-            atmosphereMeshFilter.sharedMesh = shapeSettings.CreateAtmosphere(origin);
-        }
-        
     }
 
     // Update is called once per frame
@@ -89,4 +44,31 @@ public class PlanetGenerator : MonoBehaviour
         }
         
     }
+
+    public void GenerateObject(){
+        origin = transform.position;
+        
+        SetupObject(terrainSphere, "TerrainSphere", shapeSettings.terrainMaterial, shapeSettings.CreateTerrain(origin), true);
+        if(shapeSettings.hasWater) 
+            SetupObject(waterSphere, "WaterSphere", shapeSettings.waterMaterial, shapeSettings.CreateWater(origin), false);
+        if(shapeSettings.hasAtmosphere) 
+            SetupObject(atmosphereSphere, "AtmosphereSphere", shapeSettings.atmosphereMaterial, shapeSettings.CreateAtmosphere(origin), false);
+        
+    }
+
+    public void SetupObject(GameObject gameObject, string objectName, Material material, Mesh mesh, bool hasCollider){
+        if(gameObject == null) gameObject = new GameObject(objectName);
+        gameObject.transform.parent = this.gameObject.transform;
+        if(gameObject.GetComponent<MeshRenderer>() == null) gameObject.AddComponent<MeshRenderer>().sharedMaterial = material;
+        if(gameObject.GetComponent<MeshFilter>() == null) gameObject.AddComponent<MeshFilter>();
+        MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
+        meshFilter.transform.position = origin;
+        meshFilter.sharedMesh = mesh;
+        meshFilter.sharedMesh.RecalculateBounds();
+        if(!hasCollider) return;
+        if(gameObject.GetComponent<MeshCollider>() == null) gameObject.AddComponent<MeshCollider>();
+        gameObject.GetComponent<MeshCollider>().sharedMesh = null;
+        gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+    }
+    
 }

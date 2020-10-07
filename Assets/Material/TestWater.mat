@@ -20,16 +20,17 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 0addb2a72a8219a4a83ea17df24f5f97, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8b8c6b839145e384ea47ac004704e940, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - glossAmplifier: 8.1
+    - glossAmplifier: 3.47
     - minTerrainValue: 46
     - reflectionOffset: 0.06
-    - spotSize: 0.31
+    - spotSize: 0.2
     - terrainRadius: 50
-    - waterOffset: -1.22
+    - waterOffset: -0.94
+    - waveSize: 10
     m_Colors:
     - deepColor: {r: 0, g: 0.27189383, b: 0.6132076, a: 1}
     - lightPos: {r: 3000, g: 0, b: 0, a: 0}

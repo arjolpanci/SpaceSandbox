@@ -19,7 +19,7 @@ public class IcoSphere
         List<Face> triangles = SubDivideFaces(resolution);
         mesh.vertices = vertices;
         mesh.triangles = GetTrianglesFromFaces(triangles);
-        //mesh.normals = vertices;
+        mesh.uv = GetUVs(mesh);
         return mesh;
     }
 
@@ -275,6 +275,18 @@ public class IcoSphere
             vertices[i] = vertices[i].normalized;
         }
         return triangleList;
+    }
+
+    public static Vector2[] GetUVs(Mesh mesh){
+        Vector2[] uvMap = new Vector2[mesh.vertices.Length];
+        for(int i=0; i<vertices.Length; i++){
+                Vector3 unitVector = vertices[i].normalized;
+                Vector2 ICOuv = new Vector2(0, 0);
+                ICOuv.x = (Mathf.Atan2(unitVector.x, Mathf.Abs(unitVector.z)) + Mathf.PI) / Mathf.PI / 2;
+                ICOuv.y = (Mathf.Acos(unitVector.y) + Mathf.PI) / Mathf.PI - 1;
+                uvMap[i] = new Vector2(ICOuv.x, ICOuv.y);
+        }
+        return uvMap;
     }
 
     public static int GetLeftIndex(int i, int indexOffset){

@@ -11,6 +11,7 @@
         shoreColor ("Water Shore Color", Color) = (1,1,1,1)
         deepColor ("Water Deep Color", Color) = (1,1,1,1)
         lightPos ("Light Location", vector) = (0,0,0)
+        waveSize ("Wave Size", float) = 1
     }
     SubShader
     {
@@ -54,6 +55,7 @@
             float4 shoreColor;
             float4 deepColor;
             float3 lightPos;
+            float waveSize;
 
             
             v2f vert (appdata v)
@@ -68,30 +70,11 @@
                 return o;
             }
 
-            float2 rayIntersect(float3 rayOrigin, float3 rayDir, float3 sphereCenter, float sphereRadius) {
-                float3 offsetFromOrigin = rayOrigin - sphereCenter;
-                float a = dot(rayDir, rayDir);
-                float b = 2 * (dot(rayDir, offsetFromOrigin));
-                float c = dot(offsetFromOrigin, offsetFromOrigin) - (sphereRadius * sphereRadius);
-                
-                float discriminant = (b*b) - (4*a*c);
-                float sd = sqrt(discriminant);
-
-                if(discriminant >= 0){
-                    float distanceFromOrigin = max(0, (-b-sd) / (2*a));
-                    //distanceFromOrigin = (-b-sd) / (2*a);
-                    float distanceFromOrginFar = (-b+sd) / (2*a);
-
-                    return float2(distanceFromOrigin, distanceFromOrginFar);
-                }
-
-                return float2(0,-1);
-            }
-
+           
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 resolution = float2(1024, 1024);
-                float4 noiseVal = tex2D(_MainTex, (i.uv + (_SinTime/1000)) * 20);
+                float4 noiseVal = tex2D(_MainTex, (i.uv + (_SinTime/500)) * waveSize);
                 //noiseVal = step(0.6, noiseVal);
                 noiseVal = smoothstep(0.6, 0.9, noiseVal);
 
