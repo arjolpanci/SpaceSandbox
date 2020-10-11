@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolution: 70
   meshType: 0
-  terrainRadius: 2
+  terrainRadius: 3
   waterRadius: 0
   hasWater: 0
   hasAtmosphere: 0
   hasCraters: 1
-  nrOfCraters: 100
+  nrOfCraters: 150
   noiseLayers:
   - noiseSettings:
       enabled: 1
@@ -42,6 +42,8 @@ MonoBehaviour:
       noiseType: 0
       useFirstLayerAsMask: 1
   offset: {x: 0, y: 0, z: 0}
+  shallowColor: {r: 0, g: 0, b: 0, a: 0}
+  deepColor: {r: 0, g: 0, b: 0, a: 0}
   shoreGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}

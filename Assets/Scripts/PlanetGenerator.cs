@@ -6,9 +6,8 @@ public class PlanetGenerator : MonoBehaviour
 {
 
     public PlanetShapeSettings shapeSettings;
+    public GameObject player, mainStar;
 
-    public GameObject player;
-    
     GameObject terrainSphere, atmosphereSphere, waterSphere;
     float gravity = -10F;
     Vector3 origin;
@@ -48,15 +47,15 @@ public class PlanetGenerator : MonoBehaviour
     public void GenerateObject(){
         origin = transform.position;
         
-        SetupObject(terrainSphere, "TerrainSphere", shapeSettings.terrainMaterial, shapeSettings.CreateTerrain(origin), true);
+        SetupObject(ref terrainSphere, "TerrainSphere", shapeSettings.terrainMaterial, shapeSettings.CreateTerrain(origin), true);
         if(shapeSettings.hasWater) 
-            SetupObject(waterSphere, "WaterSphere", shapeSettings.waterMaterial, shapeSettings.CreateWater(origin), false);
+            SetupObject(ref waterSphere, "WaterSphere", shapeSettings.waterMaterial, shapeSettings.CreateWater(origin), false);
+            if(waterSphere != null) shapeSettings.UpdateWaterProperites(waterSphere.GetComponent<Renderer>(), mainStar.transform.position);
         if(shapeSettings.hasAtmosphere) 
-            SetupObject(atmosphereSphere, "AtmosphereSphere", shapeSettings.atmosphereMaterial, shapeSettings.CreateAtmosphere(origin), false);
-        
+            SetupObject(ref atmosphereSphere, "AtmosphereSphere", shapeSettings.atmosphereMaterial, shapeSettings.CreateAtmosphere(origin), false);   
     }
 
-    public void SetupObject(GameObject gameObject, string objectName, Material material, Mesh mesh, bool hasCollider){
+    public void SetupObject(ref GameObject gameObject, string objectName, Material material, Mesh mesh, bool hasCollider){
         if(gameObject == null) gameObject = new GameObject(objectName);
         gameObject.transform.parent = this.gameObject.transform;
         if(gameObject.GetComponent<MeshRenderer>() == null) gameObject.AddComponent<MeshRenderer>().sharedMaterial = material;
@@ -69,6 +68,8 @@ public class PlanetGenerator : MonoBehaviour
         if(gameObject.GetComponent<MeshCollider>() == null) gameObject.AddComponent<MeshCollider>();
         gameObject.GetComponent<MeshCollider>().sharedMesh = null;
         gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+        //if(objectName.Equals("WaterSphere")) waterRenderer = gameObject.GetComponent<Renderer>();
+        //if(objectName.Equals("AtmosphereSphere")) atmosphereRenderer = gameObject.GetComponent<Renderer>();
     }
     
 }

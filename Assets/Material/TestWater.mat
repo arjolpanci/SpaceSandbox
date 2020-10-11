@@ -25,14 +25,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - glossAmplifier: 3.47
-    - minTerrainValue: 46
+    - minTerrainValue: 45
     - reflectionOffset: 0.06
     - spotSize: 0.2
     - terrainRadius: 50
-    - waterOffset: -0.94
+    - waterOffset: -1.14
     - waveSize: 10
     m_Colors:
-    - deepColor: {r: 0, g: 0.27189383, b: 0.6132076, a: 1}
+    - deepColor: {r: 0.028435374, g: 0.30416882, b: 0.6698113, a: 1}
     - lightPos: {r: 3000, g: 0, b: 0, a: 0}
-    - shoreColor: {r: 0, g: 0.80852216, b: 0.8679245, a: 1}
+    - shoreColor: {r: 0, g: 0.8351569, b: 1, a: 1}
   m_BuildTextureStacks: []

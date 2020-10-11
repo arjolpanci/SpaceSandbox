@@ -170,7 +170,7 @@
                 
                 if(length(camPos - atmosphereCenter) < atmosphereRadius) dirToPoint *= -1;
                 //pointPos = FindFirstAtmospherePoint(camPos, dirToPoint, flag);
-
+                dirToPoint = normalize(pointPos - lightPos);
                 const float epsilon = 0.0001;              
                 float2 hitInfo = rayIntersect(pointPos, dirToPoint, atmosphereCenter, atmosphereRadius);
                 float distanceTo = hitInfo.x;

@@ -23,6 +23,7 @@ public class PlanetShapeSettings : ScriptableObject
     public Vector3 offset;
 
     [Header("Color Parameters")]
+    public Color shallowColor, deepColor;
     public Gradient shoreGradient, mainTerrainGradien, peaksGradient;
     public Material terrainMaterial, waterMaterial, atmosphereMaterial;
     [Range(0,1)]
@@ -126,7 +127,8 @@ public class PlanetShapeSettings : ScriptableObject
         mesh.Clear();
 
         mesh = CubicSphere.GetSphereMesh(resolution);
-        AddMeshDetail(mesh, origin, terrainRadius * 1.15F, false);
+        //AddMeshDetail(mesh, origin, terrainRadius * 1.15F, false);
+        AddMeshDetail(mesh, origin, maxTerrainValue * 1.01F, false);
         
         mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
@@ -144,8 +146,8 @@ public class PlanetShapeSettings : ScriptableObject
         mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         mesh.tangents = waterLevelData;
-        waterMaterial.SetFloat("_MinLevel", minTerrainValue);
-        waterMaterial.SetFloat("_WaterLine", terrainRadius);
+        //waterMaterial.SetFloat("_MinLevel", minTerrainValue);
+        //waterMaterial.SetFloat("_WaterLine", terrainRadius);
 
         return mesh;
     }
@@ -171,6 +173,12 @@ public class PlanetShapeSettings : ScriptableObject
 
         return colors;
     }
+
+    public void UpdateWaterProperites(Renderer renderer, Vector3 starPos){
+        ShaderHelper.UpdateWaterProperties(renderer, minTerrainValue, terrainRadius, 
+        shallowColor, deepColor, starPos);
+    }
+
 }
 
 
