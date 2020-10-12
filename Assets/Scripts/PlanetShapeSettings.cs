@@ -23,6 +23,7 @@ public class PlanetShapeSettings : ScriptableObject
     public Vector3 offset;
 
     [Header("Color Parameters")]
+    public Vector3 atmosphereWaveLengths;
     public Color shallowColor, deepColor;
     public Gradient shoreGradient, mainTerrainGradien, peaksGradient;
     public Material terrainMaterial, waterMaterial, atmosphereMaterial;
@@ -146,9 +147,7 @@ public class PlanetShapeSettings : ScriptableObject
         mesh.RecalculateNormals();
         mesh.bounds = new Bounds(origin, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
         mesh.tangents = waterLevelData;
-        //waterMaterial.SetFloat("_MinLevel", minTerrainValue);
-        //waterMaterial.SetFloat("_WaterLine", terrainRadius);
-
+        
         return mesh;
     }
 
@@ -177,6 +176,11 @@ public class PlanetShapeSettings : ScriptableObject
     public void UpdateWaterProperites(Renderer renderer, Vector3 starPos){
         ShaderHelper.UpdateWaterProperties(renderer, minTerrainValue, terrainRadius, 
         shallowColor, deepColor, starPos);
+    }
+
+    public void UpdateAtmosphereProperties(Renderer renderer, Vector3 starPos, Vector3 planetPos){
+        ShaderHelper.UpdateAtmosphereProperties(renderer, planetPos, atmosphereWaveLengths, 
+        starPos, terrainRadius, maxTerrainValue * 1.01F);
     }
 
 }

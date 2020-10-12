@@ -17,7 +17,7 @@ MonoBehaviour:
   terrainRadius: 80
   waterRadius: 80
   hasWater: 1
-  hasAtmosphere: 0
+  hasAtmosphere: 1
   hasCraters: 0
   nrOfCraters: 0
   noiseLayers:
@@ -52,6 +52,7 @@ MonoBehaviour:
       noiseType: 0
       useFirstLayerAsMask: 0
   offset: {x: 0, y: 0, z: 0}
+  atmosphereWaveLengths: {x: 7, y: 5.3, z: 4.4}
   shallowColor: {r: 0.765255, g: 0.43543077, b: 0.9716981, a: 0}
   deepColor: {r: 0.27149403, g: 0.038047336, b: 0.4245283, a: 0}
   shoreGradient:

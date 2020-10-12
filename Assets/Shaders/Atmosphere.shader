@@ -2,10 +2,8 @@
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
         lightSamplePoints ("Light Sample Points", int) = 5
         viewSamplePoints ("View Sample Points", int) = 5
-        atmosphereCenter ("Atmosphere Center", vector) = (0,0,0)
         planetCenter ("Planet Center", vector) = (0,0,0)
         waveLengths ("Wave Lengths", vector) = (440,500,770)
         lightPos ("Light Position", vector) = (6000,0,0)
@@ -16,8 +14,6 @@
         intensity ("Intensity", float) = 1
         atmosphereRadius ("Atmosphere Radius", float) = 2
         
-        //_SphereCenter ("Sphere Center", vector) = (0,0,0)
-        //_SphereRadius ("Sphere Radius", float) = 1
     }
     SubShader
     {
@@ -28,7 +24,7 @@
         Cull Off
         //ZTest Always
         Blend One One
-        //Blend SrcAlpha OneMinusSrcAlpha
+
         Pass
         {
             CGPROGRAM
@@ -51,15 +47,12 @@
                 float4 vertex : SV_POSITION;
                 float3 worldPos : TEXCOORD01;
                 float3 center : TEXCOORD2;
-                float3 normal :TEXCOORD4;
+                float3 normal :TEXCOORD3;
+                float3 viewDir : TEXCOORD4;
             };
 
-            sampler2D _MainTex;
-            sampler2D _CameraDepthTexture;
-            float4 _MainTex_ST;
             int viewSamplePoints;
             int lightSamplePoints;
-            float3 atmosphereCenter;
             float3 planetCenter;
             float3 lightPos;
             float3 waveLengths;
@@ -74,9 +67,10 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv = v.uv;
                 o.worldPos = mul (unity_ObjectToWorld, v.vertex);
                 o.center = mul (unity_ObjectToWorld, half4(0,0,0,1));
+                o.viewDir = normalize(-WorldSpaceViewDir(v.vertex));
                 o.normal = v.normal;
                 return o;
             }
@@ -104,17 +98,18 @@
             float CalculateRayDepth(float3 atmospherePoint){
                 float lightOpticalDepth = 0;
                 
-                float3 dirToLight = normalize(lightPos - planetCenter);
+                float3 dirToLight = normalize(lightPos - atmospherePoint);
                 float2 hitInfo = rayIntersect(atmospherePoint, dirToLight, planetCenter, atmosphereRadius);
-                float distanceThrough = hitInfo.y - hitInfo.x;
+                float distanceThrough = hitInfo.y;
                 if(distanceThrough < 0) return -1;
                 
                 float step = distanceThrough / (lightSamplePoints-1);
                 float3 currentPoint = atmospherePoint;
 
                 for(int i=0; i<lightSamplePoints; i++){
-                    float pointHeight = distance(currentPoint, planetCenter) - planetRadius;
-                    if(pointHeight < 0) return -1;
+                    float pointHeight = distance(planetCenter, currentPoint) - planetRadius;
+                    if(pointHeight < 0) return lightOpticalDepth;
+                    //pointHeight = smoothstep(planetRadius, atmosphereRadius, pointHeight);
                     float currentLightOpticalDepth = exp(-pointHeight / rayLeightHeight) * step;
                     lightOpticalDepth += currentLightOpticalDepth;
                     currentPoint += (dirToLight * step);
@@ -144,7 +139,7 @@
                     totalOpticalDepth += pointDepth;
 
                     float3 transmittance = exp(-(lightOpticalDepth + totalOpticalDepth) * colors);
-                    finalLightValue += transmittance * pointDepth * step; 
+                    finalLightValue += (transmittance * pointDepth * step); 
                     currentPoint += (rayDir * step);
                 }
                 
@@ -153,32 +148,22 @@
                 return finalLightValue;
             }
 
-            /*float3 FindFirstAtmospherePoint(float3 camPos, float3 viewDir, bool flag){
-                float epsilon = 1.00001;
-                if(flag) epsilon *= -1;
-                float2 hitInfo = rayIntersect(camPos , viewDir, atmosphereCenter, atmosphereRadius);
-                float distanceToPoint = hitInfo.x;
-                float3 firstPoint = camPos + (viewDir * distanceToPoint * epsilon);
-                return firstPoint;
-            }*/
-
             fixed4 frag (v2f i) : SV_Target
             {
                 float3 camPos = _WorldSpaceCameraPos;
                 float3 pointPos = i.worldPos;
-                float3 dirToPoint = normalize(pointPos - camPos);
+                float3 dir = normalize(pointPos - lightPos);
+                //float3 dir = i.viewDir;
+                //if(distance(planetCenter, camPos) <= atmosphereRadius) 
                 
-                if(length(camPos - atmosphereCenter) < atmosphereRadius) dirToPoint *= -1;
-                //pointPos = FindFirstAtmospherePoint(camPos, dirToPoint, flag);
-                dirToPoint = normalize(pointPos - lightPos);
-                const float epsilon = 0.0001;              
-                float2 hitInfo = rayIntersect(pointPos, dirToPoint, atmosphereCenter, atmosphereRadius);
+                const float epsilon = 0.0001;
+                float2 hitInfo = rayIntersect(pointPos + epsilon, dir, planetCenter, atmosphereRadius);
                 float distanceTo = hitInfo.x;
                 float distanceThrough = hitInfo.y - hitInfo.x;
-                
+
                 if(distanceThrough < 0) return float4(0,0,0,0);
                       
-                float3 light = CalculateLight(distanceThrough - epsilon, pointPos, dirToPoint, viewSamplePoints);
+                float3 light = CalculateLight(distanceThrough - epsilon, pointPos, dir, viewSamplePoints);
                 
                 return float4(light , 1);
 

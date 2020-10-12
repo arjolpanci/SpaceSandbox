@@ -31,9 +31,9 @@ Material:
     - lightSamplePoints: 10
     - planetRadius: 50
     - rayLeightHeight: 0.94
-    - scaleHeight: 1.52
+    - scaleHeight: 1.69
     - scatterStrength: 1
-    - scatteringCoefficient: 2.99
+    - scatteringCoefficient: 3
     - viewSamplePoints: 10
     m_Colors:
     - atmosphereCenter: {r: 0, g: 0, b: 0, a: 0}

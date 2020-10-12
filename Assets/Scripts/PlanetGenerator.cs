@@ -53,6 +53,8 @@ public class PlanetGenerator : MonoBehaviour
             if(waterSphere != null) shapeSettings.UpdateWaterProperites(waterSphere.GetComponent<Renderer>(), mainStar.transform.position);
         if(shapeSettings.hasAtmosphere) 
             SetupObject(ref atmosphereSphere, "AtmosphereSphere", shapeSettings.atmosphereMaterial, shapeSettings.CreateAtmosphere(origin), false);   
+            if(atmosphereSphere != null) shapeSettings.UpdateAtmosphereProperties(atmosphereSphere.GetComponent<Renderer>(), 
+            mainStar.transform.position, origin);
     }
 
     public void SetupObject(ref GameObject gameObject, string objectName, Material material, Mesh mesh, bool hasCollider){

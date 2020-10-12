@@ -52,6 +52,7 @@ MonoBehaviour:
       noiseType: 0
       useFirstLayerAsMask: 0
   offset: {x: 0, y: 0, z: 0}
+  atmosphereWaveLengths: {x: 7, y: 5.3, z: 4.4}
   shallowColor: {r: 0.06007475, g: 0.80275047, b: 0.8490566, a: 0}
   deepColor: {r: 0.01744394, g: 0.23723117, b: 0.5283019, a: 0}
   shoreGradient:
