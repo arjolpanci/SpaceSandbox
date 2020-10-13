@@ -17,9 +17,9 @@ MonoBehaviour:
   terrainRadius: 80
   waterRadius: 80
   hasWater: 1
-  hasAtmosphere: 1
-  hasCraters: 0
-  nrOfCraters: 0
+  hasAtmosphere: 0
+  hasCraters: 1
+  nrOfCraters: 20
   noiseLayers:
   - noiseSettings:
       enabled: 1

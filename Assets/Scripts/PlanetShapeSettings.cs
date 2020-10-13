@@ -39,11 +39,11 @@ public class PlanetShapeSettings : ScriptableObject
         Vector3[] workVertices = mesh.vertices;
         
         while(nrOfCraters > 0){
-            float craterRadius = Random.Range(0.5F, 1.5F)/terrainRadius;
+            float craterRadius = Random.Range(0.05F, 0.15F);
             float craterDepth = Random.Range(0.9F, 0.98F);
             int craterBase = Random.Range(0, vertices.Length-1);
             for(int i=0; i<vertices.Length; i++){
-                float distance = Vector3.Distance(workVertices[craterBase], workVertices[i]);
+                float distance = Vector3.Distance(workVertices[craterBase].normalized, workVertices[i].normalized);
                 if(distance <= craterRadius){
                     vertices[i] *= GetCraterVertexDepth(distance, craterDepth, craterRadius);
                 }
@@ -56,8 +56,9 @@ public class PlanetShapeSettings : ScriptableObject
 
     public float GetCraterVertexDepth(float distance, float craterDepth, float craterRadius){
         float input = Mathf.InverseLerp(0, craterRadius, distance);
-        float value = Mathf.Pow(input, 2);
-        float result = value * (0.99F-craterDepth) + craterDepth;
+        float value = Mathf.Min(1.5F * Mathf.Pow(input, 3) * Mathf.Sin(input), Mathf.Log(7*input)/2);
+        if(value >= 1.2F || value <= 0) value = 0;
+        float result = value * (1.0F-craterDepth) + craterDepth;
         return result;
     }
 
