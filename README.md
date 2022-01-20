@@ -1,6 +1,6 @@
 # Space Sandbox
 
-~~~ Currently suspended/abandoned due to heavy daily workloads, may resume again at some point in the future. ~~~
+/// Currently suspended/abandoned due to heavy daily workloads, may resume again at some point in the future. ///
 
 This project is an attempt to simulate a micro procedurally generated universe. The features of each celestial body are randomly generated depending on their position on the world space.
 
