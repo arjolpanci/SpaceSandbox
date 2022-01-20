@@ -1,5 +1,7 @@
 # Space Sandbox
 
+~~~ Currently suspended/abandoned due to heavy daily workloads, may resume again at some point in the future. ~~~
+
 This project is an attempt to simulate a micro procedurally generated universe. The features of each celestial body are randomly generated depending on their position on the world space.
 
 The project uses Unity for the game engine, C# for scripting and Nvidia CG Language for the custom Shaders.
